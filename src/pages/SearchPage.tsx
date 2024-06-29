@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { useSearchRestaurants } from "@/api/RestaurantApi";
 import CuisineFilter from "@/components/CuisineFilter";
 import PaginationSelector from "@/components/PaginationSelector";
@@ -5,8 +7,6 @@ import SearchBar, { SearchForm } from "@/components/SearchBar";
 import SearchResultCard from "@/components/SearchResultCard";
 import SearchResultInfo from "@/components/SearchResultInfo";
 import SortOptionDropdown from "@/components/SortOptionDropdown";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
 
 export type SearchState = {
   searchQuery: string;
@@ -25,7 +25,6 @@ const SearchPage = () => {
   });
 
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
-
   const { results, isLoading } = useSearchRestaurants(searchState, city);
 
   const setSortOption = (sortOption: string) => {
@@ -67,8 +66,14 @@ const SearchPage = () => {
     }));
   };
 
+  useEffect(() => {
+    if (!isLoading && results?.data && city) {
+      console.log('Search results:', results);
+    }
+  }, [isLoading, results, city]);
+
   if (isLoading) {
-    <span>Loading ...</span>;
+    return <span>Loading ...</span>;
   }
 
   if (!results?.data || !city) {
@@ -103,7 +108,7 @@ const SearchPage = () => {
         </div>
 
         {results.data.map((restaurant) => (
-          <SearchResultCard restaurant={restaurant} />
+          <SearchResultCard key={restaurant._id} restaurant={restaurant} />
         ))}
         <PaginationSelector
           page={results.pagination.page}
