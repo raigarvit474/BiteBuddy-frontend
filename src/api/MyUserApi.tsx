@@ -32,10 +32,11 @@ export const useGetMyUser = () => {
     error,
   } = useQuery("fetchCurrentUser", getMyUserRequest);
 
-  if(error){
+  if (error) {
     toast.error(error.toString());
   }
-  return { currentUser,isLoading };
+
+  return { currentUser, isLoading };
 };
 
 type CreateUserRequest = {
@@ -56,6 +57,7 @@ export const useCreateMyUser = () => {
       },
       body: JSON.stringify(user),
     });
+
     if (!response.ok) {
       throw new Error("Failed to create user");
     }
@@ -99,8 +101,9 @@ export const useUpdateMyUser = () => {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to update User");
+      throw new Error("Failed to update user");
     }
+
     return response.json();
   };
 
@@ -113,8 +116,9 @@ export const useUpdateMyUser = () => {
   } = useMutation(updateMyUserRequest);
 
   if (isSuccess) {
-    toast.success("User Profile Updated!");
+    toast.success("User profile updated!");
   }
+
   if (error) {
     toast.error(error.toString());
     reset();
